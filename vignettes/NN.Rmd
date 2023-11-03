@@ -1,0 +1,44 @@
+---
+title: "Group9"
+output: html_document
+date: "2023-11-03"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# 安装和加载必要的包
+install.packages("neuralnet")
+library(neuralnet)
+
+# 数据预处理
+# 假设你已经拥有一个数据框叫做data
+
+# 将数据分为训练集和测试集
+set.seed(123)  # 设置随机种子以保证结果可重复
+train_indices <- sample(1:nrow(data), nrow(data)*0.8)
+train_data <- data[train_indices,]
+test_data <- data[-train_indices,]
+
+# 定义神经网络公式
+formula <- target ~ feature1 + feature2 + ...  # 根据你的数据添加更多的特征
+
+# 训练神经网络模型
+nn_model <- neuralnet(formula, data=train_data, hidden=c(5,5), act.fct="logistic", linear.output=FALSE)
+
+# 可视化模型结构
+plot(nn_model)
+
+# 使用模型进行预测
+test_predictions <- compute(nn_model, test_data[,c('feature1', 'feature2', ...)])  # 根据你的数据添加更多的特征
+
+# 将预测结果转换为二进制格式
+predicted_class <- ifelse(test_predictions$net.result > 0.5, 1, 0)
+
+# 评估模型性能
+table(predicted = predicted_class, actual = test_data$target)
+
+```
+
